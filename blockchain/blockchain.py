@@ -212,22 +212,55 @@ def mine():
 
 @app.route('/transactions/new', methods=['POST'])
 def new_transaction():
+    """
+    Accept signed birth cert record from the client and add it
+    to pending transactions
+    """
     values = request.form
-    required = ['confirmation_sender_public_key', 'confirmation_recipient_public_key', 'transaction_signature',
-                'confirmation_amount']
+
+    required = [
+        'confirmation_sender_public_key',
+        'confirmation_child_name',
+        'confirmation_date_of_birth',
+        'confirmation_place_of_birth',
+        'confirmation_parent1_name',
+        'confirmation_parent2_name',
+        'confirmation_birth_certificate_id',
+        'transaction_signature'
+    ]
     if not all(k in values for k in required):
         return 'Missing values', 400
+    
+    certificate = OrderedDict ({
+        'hospital_public_key': values['confirmation_sender_public_key'],
+        'child_name': values['confirmation_child_name'],
+        'date_of_birth': values['confirmation_date_of_birth'],
+        'place_of_birth': values['confirmation_place_of_birth'],
+        'parent1_name' : values['confirmation_parent1_name'],
+        'parent2_name': values['confirmation_parent2_name'],
+        'birth_certificate_id': values['confirmation_birth_certificate_id'],
 
-    transaction_results = blockchain.submit_transaction(values['confirmation_sender_public_key'],
-                                                        values['confirmation_recipient_public_key'],
-                                                        values['transaction_signature'],
-                                                        values['confirmation_amount'])
-    if transaction_results == False:
-        response = {'message': 'Invalid transaction/signature'}
+    })
+
+    is_valid = blockchain.verify_transaction_signature(
+        values['confirmation_sender_public_key'],
+        values['transaction_signature'],
+        certificate
+    )
+
+    if not is_valid:
+        response = {'message' : 'Invalid certificate'}
         return jsonify(response), 406
-    else:
-        response = {'message': 'Transaction will be added to the Block ' + str(transaction_results)}
-        return jsonify(response), 201
+    
+    blockchain.transactions.append(certificate)
+
+    response = {
+        'message' : 'Certificate will be added to the next block',
+        'certificate' :certificate,
+        'pending_index': len(blockchain.transactions)
+    }
+
+    return jsonify(response), 201
 
 
 @app.route('/nodes/get', methods=['GET'])

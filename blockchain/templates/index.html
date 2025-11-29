@@ -82,129 +82,166 @@
     <script src="/static/vendor/DataTables/js/datatables.min.js"></script>
     <script src="/static/vendor/DataTables/js/ellipsis.js"></script>
 
-    <script>
-        $(function() {
+   <script>
+$(function() {
 
-            $.ajax({
-                url: "/chain",
-                type: "GET",
-                success: function(response) {
-                    let transactions = []
-                    let count = 1
+    // 1) Certificates already on the blockchain (mined)
+    $.ajax({
+        url: "/chain",
+        type: "GET",
+        success: function(response) {
 
-                    for (i=0; i<response['length']; i++) {
-                        for (j=0; j<response['chain'][i]['transactions'].length; j++) {
-                            let options = {  year: "numeric", month: "short",  day: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit"  };
-                            let date = new Date(response["chain"][i]["timestamp"] * 1000);
-                            formattedTimestamp = date.toLocaleTimeString('en-US', options);
+            let transactions = [];
+            let count = 1;
 
-                            let transaction = [
-                                count,
-                                response['chain'][i]['transactions'][j]['sender_public_key'],
-                                response['chain'][i]['transactions'][j]['recipient_public_key'],
-                                response['chain'][i]['transactions'][j]['amount'],
-                                formattedTimestamp,
-                                response['chain'][i]['block_number']
-                            ]
+            for (let i = 0; i < response['length']; i++) {
+                const block = response['chain'][i];
 
-                            transactions.push(transaction);
-                            count += 1;
-                        }
+                for (let j = 0; j < block['transactions'].length; j++) {
+                    let tx = block['transactions'][j];
+
+                    // Skip mining reward or old txs that aren't certificates
+                    if (!tx.hasOwnProperty('hospital_public_key')) {
+                        continue;
                     }
 
-                    $('#transactions_table').dataTable({
-                        data: transactions,
-                        columns: [
-                            {title: "#"},
-                            {title: "Sender Public Key"},
-                            {title: "Recipient Public Key"},
-                            {title: "Amount"},
-                            {title: "Timestamp"},
-                            {title: "Block#"},
+                    let options = {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        second: "2-digit"
+                    };
+                    let date = new Date(block["timestamp"] * 1000);
+                    let formattedTimestamp = date.toLocaleTimeString('en-US', options);
 
-                        ],
-                        columnDefs: [{targets: [1,2,3,4,5], render: $.fn.dataTable.render.ellipsis(25)}]
-                    });
-                },
-                error: function(error) {
-                    console.log(error);
+                    let row = [
+                        count,
+                        tx['child_name'],
+                        tx['date_of_birth'],
+                        tx['place_of_birth'],
+                        tx['parent1_name'],
+                        tx['parent2_name'],
+                        tx['birth_certificate_id'],
+                        tx['hospital_public_key'],
+                        formattedTimestamp,
+                        block['block_number']
+                    ];
+
+                    transactions.push(row);
+                    count += 1;
                 }
+            }
+
+            $('#transactions_table').DataTable({
+                data: transactions,
+                columns: [
+                    { title: "#" },
+                    { title: "Child Name" },
+                    { title: "Date of Birth" },
+                    { title: "Place of Birth" },
+                    { title: "Parent 1" },
+                    { title: "Parent 2" },
+                    { title: "Certificate ID" },
+                    { title: "Hospital Public Key" },
+                    { title: "Timestamp" },
+                    { title: "Block #" }
+                ],
+                columnDefs: [
+                    { targets: [1,2,3,4,5,6,7,8,9], render: $.fn.dataTable.render.ellipsis(25) }
+                ]
             });
+        },
+        error: function(error) {
+            console.log(error);
+        }
+    });
 
+    // 2) Pending certificates (unmined)
+    $.ajax({
+        url: "/transactions/get",
+        type: "GET",
+        success: function(response) {
 
+            let transactions = [];
+            let count = 1;
 
-            $.ajax({
-                url: "/transactions/get",
-                type: "GET",
-                success: function(response) {
+            for (let i = 0; i < response['transactions'].length; i++) {
+                let tx = response['transactions'][i];
 
-                    let transactions = []
-                    let count = 1
+                let row = [
+                    count,
+                    tx['child_name'],
+                    tx['date_of_birth'],
+                    tx['place_of_birth'],
+                    tx['parent1_name'],
+                    tx['parent2_name'],
+                    tx['birth_certificate_id'],
+                    tx['hospital_public_key']
+                ];
 
-                    for (i=0; i<response['transactions'].length; i++) {
+                transactions.push(row);
+                count += 1;
+            }
 
-                        let transaction = [
-                            count,
-                            response['transactions'][i]['sender_public_key'],
-                            response['transactions'][i]['recipient_public_key'],
-                            response['transactions'][i]['amount'],
-                        ]
-
-                        transactions.push(transaction);
-
-                        count += 1;
-                    }
-
-                    $('#unmined_transactions_table').dataTable({
-                        data: transactions,
-                        columns: [
-                            {title: "#"},
-                            {title: "Sender Public Key"},
-                            {title: "Recipient Public Key"},
-                            {title: "Amount"},
-                        ],
-                        columnDefs: [{targets: [1,2,3], render: $.fn.dataTable.render.ellipsis(25)}]
-                    });
-                },
-                error: function(error) {
-                    console.log(error);
-                }
+            $('#unmined_transactions_table').DataTable({
+                data: transactions,
+                columns: [
+                    { title: "#" },
+                    { title: "Child Name" },
+                    { title: "Date of Birth" },
+                    { title: "Place of Birth" },
+                    { title: "Parent 1" },
+                    { title: "Parent 2" },
+                    { title: "Certificate ID" },
+                    { title: "Hospital Public Key" }
+                ],
+                columnDefs: [
+                    { targets: [1,2,3,4,5,6,7], render: $.fn.dataTable.render.ellipsis(25) }
+                ]
             });
+        },
+        error: function(error) {
+            console.log(error);
+        }
+    });
 
-            $('#mine_button').click(function() {
-                $.ajax({
-                    url: '/mine',
-                    type: 'GET',
-                    success: function(response) {
-                        window.location.reload();
-                    },
-                    error: function(error) {
-                        console.log(error);
-                    }
-
-                });
-            });
-
-            $('#refresh_transactions').click(function() {
+    // 3) Mine button
+    $('#mine_button').click(function() {
+        $.ajax({
+            url: '/mine',
+            type: 'GET',
+            success: function(response) {
                 window.location.reload();
-            });
-
-            $('#refresh_blockchain').click(function() {
-                $.ajax({
-                    url: '/nodes/resolve',
-                    type: 'GET',
-                    success: function(response) {
-                        window.location.reload();
-                    },
-                    error: function(error) {
-                        console.log(error);
-                    }
-                });
-            });
-
+            },
+            error: function(error) {
+                console.log(error);
+            }
         });
+    });
 
-    </script>
+    // 4) Refresh pending table
+    $('#refresh_transactions').click(function() {
+        window.location.reload();
+    });
+
+    // 5) Refresh blockchain & resolve conflicts
+    $('#refresh_blockchain').click(function() {
+        $.ajax({
+            url: '/nodes/resolve',
+            type: 'GET',
+            success: function(response) {
+                window.location.reload();
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+    });
+
+});
+</script>
 
 </body>
 </html>

@@ -180,6 +180,10 @@
                   </div>
                 </div>
 
+                <input type="hidden" name="confirmation_place_of_birth" id="confirmation_place_of_birth">
+                <input type="hidden" name="confirmation_parent1_name" id="confirmation_parent1_name">
+                <input type="hidden" name="confirmation_parent2_name" id="confirmation_parent2_name">
+
             </form>
 
 
@@ -242,15 +246,26 @@
                 success:function(response)
                 {
                     document.getElementById('confirmation_sender_public_key').value=
-                    response['certificate']['hospital_public_key'];
+                      response['certificate']['hospital_public_key'];
                     document.getElementById('confirmation_child_name').value=
-                    response['certificate']['child_name'];
+                     response['certificate']['child_name'];
                     document.getElementById('confirmation_date_of_birth').value = 
-                    response['certificate']['date_of_birth']
+                     response['certificate']['date_of_birth']
                     document.getElementById('confirmation_birth_certificate_id').value=
-                    response['certificate']['birth_certificate_id'];
+                     response['certificate']['birth_certificate_id'];
+
+                    //hidden fields for certificate data
+                    document.getElementById('confirmation_place_of_birth').value = 
+                      response['certificate']['place_of_birth'];
+                    document.getElementById('confirmation_parent1_name').value =
+                      response['certificate']['parent1_name'];
+                    document.getElementById('confirmation_parent2_name').value = 
+                      response['certificate']['parent2_name'];
+
+
                     document.getElementById('transaction_signature').value=
-                    response['signature'];
+                      response['signature'];
+                      
                     $('#basic_modal').modal('show');
                 },
                 error:function(error)
