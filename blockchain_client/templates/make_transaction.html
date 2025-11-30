@@ -43,7 +43,7 @@
     <div class="container alert alert-secondary">
         <form id="transaction_form">
             <div class="row">
-                <label class="col-sm-2">Hospital Public Key</label>
+                <label class="col-sm-2">Hospital Public Key:</label>
                 <div class="col-sm-10">
                     <input type="text" name="hospital_public_key"
                     id="hospital_public_key" class="form-control">
@@ -51,7 +51,7 @@
             </div>
             <br>
             <div class="row">
-                <label class="col-sm-2">Hospital Private Key</label>
+                <label class="col-sm-2">Hospital Private Key:</label>
                 <div class="col-sm-10">
                     <input type="text" name="hospital_private_key"
                     id="hospital_private_key" class="form-control">
@@ -61,7 +61,7 @@
 
               <br>
             <div class="row">
-                <label class="col-sm-2">Child Name</label>
+                <label class="col-sm-2">Child Name:</label>
                 <div class="col-sm-10">
                     <input type="text" name="child_name"
                     id="child_name" class="form-control">
@@ -71,17 +71,39 @@
 
               <br>
             <div class="row">
-                <label class="col-sm-2">Date of Birth</label>
+                <label class="col-sm-2">Date of Birth:</label>
                 <div class="col-sm-10">
-                    <input type="text" name="date_of_birth"
+                    <input type="date" name="date_of_birth"
                     id="date_of_birth" class="form-control">
+                </div>
+            </div>
+            <br>
+
+
+              <br>
+            <div class="row">
+                <label class="col-sm-2">Time of Birth:</label>
+                <div class="col-sm-10">
+                    <input type="time" name="time_of_birth"
+                    id="time_of_birth" class="form-control">
+                </div>
+            </div>
+            <br>
+            
+
+              <br>
+            <div class="row">
+                <label class="col-sm-2">Name of obstetrician:</label>
+                <div class="col-sm-10">
+                    <input type="text" name="obstetrician"
+                    id="obstetrician" class="form-control">
                 </div>
             </div>
             <br>
 
               <br>
             <div class="row">
-                <label class="col-sm-2">Place of Birth (Hospital)</label>
+                <label class="col-sm-2">Place of Birth (Hospital):</label>
                 <div class="col-sm-10">
                     <input type="text" name="place_of_birth"
                     id="place_of_birth" class="form-control">
@@ -91,7 +113,7 @@
 
               <br>
             <div class="row">
-                <label class="col-sm-2">Parent 1 Name</label>
+                <label class="col-sm-2">Parent 1 Name:</label>
                 <div class="col-sm-10">
                     <input type="text" name="parent1_name"
                     id="parent1_name" class="form-control">
@@ -101,7 +123,7 @@
 
               <br>
             <div class="row">
-                <label class="col-sm-2">Parent 2 Name</label>
+                <label class="col-sm-2">Parent 2 Name:</label>
                 <div class="col-sm-10">
                     <input type="text" name="parent2_name"
                     id="parent2_name" class="form-control">
@@ -109,12 +131,22 @@
             </div>
             <br>
 
+            <br>
+            <div class="row">
+                <label class="col-sm-2">Documenting Nurse Name:</label>
+                <div class="col-sm-10">
+                    <input type="text" name="nurse_name"
+                    id="nurse_name" class="form-control">
+                </div>
+            </div>
+            <br>
+
               <br>
             <div class="row">
-                <label class="col-sm-2">Birth Certificate ID</label>
+                <label class="col-sm-2">Documenting Nurse Registration Number</label>
                 <div class="col-sm-10">
-                    <input type="text" name="birth_certificate_id"
-                    id="birth_certificate_id" class="form-control">
+                    <input type="text" name="nurse_registraion_number"
+                    id="nurse_registraion_number" class="form-control">
                 </div>
             </div>
          <br>
@@ -167,9 +199,16 @@
                 </div>
 
                 <div class="row">
-                  <label class="col-sm-12">Birth Certificate ID:</label>
+                  <label class="col-sm-12">Time of Birth:</label>
                   <div class="col-sm-12">
-                    <input type="text" name="confirmation_birth_certificate_id" id="confirmation_birth_certificate_id" rows="2" class="form-control" readonly>
+                    <input type="text" name="confirmation_time_of_birth" id="confirmation_time_of_birth" rows="2" class="form-control" readonly>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <label class="col-sm-12">Documenting Nurse Registration Number:</label>
+                  <div class="col-sm-12">
+                    <input type="text" name="confirmation_nurse_registraion_number" id="confirmation_nurse_registraion_number" rows="2" class="form-control" readonly>
                   </div>
                 </div>
 
@@ -179,10 +218,16 @@
                     <input type="text" name="transaction_signature" id="transaction_signature" rows="2" class="form-control" readonly>
                   </div>
                 </div>
+                
 
                 <input type="hidden" name="confirmation_place_of_birth" id="confirmation_place_of_birth">
                 <input type="hidden" name="confirmation_parent1_name" id="confirmation_parent1_name">
                 <input type="hidden" name="confirmation_parent2_name" id="confirmation_parent2_name">
+                <input type="hidden" name="confirmation_obstetrician" id="confirmation_obstetrician">
+                <input type="hidden" name="confirmation_nurse_name" id="confirmation_nurse_name">
+                <input type="hidden" name="confirmation_nurse_registraion_number" id="confirmation_nurse_registraion_number">
+              
+
 
             </form>
 
@@ -251,16 +296,22 @@
                      response['certificate']['child_name'];
                     document.getElementById('confirmation_date_of_birth').value = 
                      response['certificate']['date_of_birth']
-                    document.getElementById('confirmation_birth_certificate_id').value=
-                     response['certificate']['birth_certificate_id'];
+                    document.getElementById('confirmation_time_of_birth').value = 
+                     response['certificate']['time_of_birth']
+                    document.getElementById('confirmation_nurse_registraion_number').value=
+                     response['certificate']['nurse_registraion_number'];
 
                     //hidden fields for certificate data
+                    document.getElementById('confirmation_nurse_name').value=
+                     response['certificate']['nurse_name'];
                     document.getElementById('confirmation_place_of_birth').value = 
                       response['certificate']['place_of_birth'];
                     document.getElementById('confirmation_parent1_name').value =
                       response['certificate']['parent1_name'];
                     document.getElementById('confirmation_parent2_name').value = 
                       response['certificate']['parent2_name'];
+                    document.getElementById('confirmation_obstetrician').value = 
+                      response['certificate']['obstetrician'];
 
 
                     document.getElementById('transaction_signature').value=

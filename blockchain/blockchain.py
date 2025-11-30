@@ -222,10 +222,13 @@ def new_transaction():
         'confirmation_sender_public_key',
         'confirmation_child_name',
         'confirmation_date_of_birth',
+        'confirmation_time_of_birth',
         'confirmation_place_of_birth',
+        'confirmation_nurse_name',
+        'confirmation_nurse_registraion_number',
+        'confirmation_obstetrician',
         'confirmation_parent1_name',
         'confirmation_parent2_name',
-        'confirmation_birth_certificate_id',
         'transaction_signature'
     ]
     if not all(k in values for k in required):
@@ -235,10 +238,13 @@ def new_transaction():
         'hospital_public_key': values['confirmation_sender_public_key'],
         'child_name': values['confirmation_child_name'],
         'date_of_birth': values['confirmation_date_of_birth'],
+        'time_of_birth': values['confirmation_time_of_birth'],
+        'obstetrician': values['confirmation_obstetrician'],
         'place_of_birth': values['confirmation_place_of_birth'],
         'parent1_name' : values['confirmation_parent1_name'],
         'parent2_name': values['confirmation_parent2_name'],
-        'birth_certificate_id': values['confirmation_birth_certificate_id'],
+        'nurse_registraion_number': values['confirmation_nurse_registraion_number'],
+        'nurse_name': values['confirmation_nurse_name'],
 
     })
 

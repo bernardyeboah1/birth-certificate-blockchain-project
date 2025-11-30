@@ -9,25 +9,31 @@ from Crypto.Signature import PKCS1_v1_5
 from Crypto.Hash import SHA
 
 class CertificateRequest:
-    def __init__(self, hospital_public_key, hospital_private_key, child_name, date_of_birth, place_of_birth, parent1_name, parent2_name, birth_certificate_id):
+    def __init__(self, hospital_public_key, hospital_private_key, child_name, date_of_birth, time_of_birth, obstetrician, place_of_birth, parent1_name, parent2_name, nurse_name, nurse_registraion_number):
         self.hospital_public_key = hospital_public_key
         self.hospital_private_key = hospital_private_key
         self.child_name = child_name
         self.date_of_birth = date_of_birth
+        self.time_of_birth = time_of_birth
+        self.obstetrician = obstetrician
         self.place_of_birth = place_of_birth
         self.parent1_name = parent1_name
         self.parent2_name = parent2_name
-        self.birth_certificate_id = birth_certificate_id
+        self.nurse_name = nurse_name
+        self.nurse_registraion_number = nurse_registraion_number
 
     def to_dict(self):
         return OrderedDict({
             "hospital_public_key": self.hospital_public_key,
             "child_name": self.child_name, 
             "date_of_birth": self.date_of_birth, 
+            "time_of_birth" : self.time_of_birth,
+            "obstetrician" : self.obstetrician,
             "place_of_birth": self.place_of_birth,
             "parent1_name": self.parent1_name,
             "parent2_name": self.parent2_name,
-            "birth_certificate_id": self.birth_certificate_id
+            "nurse_name" : self.nurse_name,
+            "nurse_registraion_number": self.nurse_registraion_number
         })
     
     def sign_transaction(self):
@@ -62,20 +68,26 @@ def generate_transaction():
     hospital_private_key = request.form["hospital_private_key"]
     child_name = request.form["child_name"]
     date_of_birth = request.form["date_of_birth"]
+    time_of_birth= request.form["time_of_birth"]
+    obstetrician= request.form["obstetrician"]
     place_of_birth = request.form["place_of_birth"]
     parent1_name = request.form["parent1_name"]
     parent2_name = request.form["parent2_name"]
-    birth_Certificate_id = request.form["birth_certificate_id"]
+    nurse_name = request.form["nurse_name"],
+    nurse_registraion_number = request.form["nurse_registraion_number"]
 
     certificate = CertificateRequest(
         hospital_public_key=hospital_public_key,
         hospital_private_key=hospital_private_key,
         child_name=child_name,
         date_of_birth=date_of_birth,
+        time_of_birth=time_of_birth,
+        obstetrician=obstetrician,
         place_of_birth=place_of_birth,
         parent1_name=parent1_name,
         parent2_name=parent2_name,
-        birth_certificate_id=birth_Certificate_id
+        nurse_name=nurse_name,
+        nurse_registraion_number=nurse_registraion_number
     )
 
     response = {"certificate":certificate.to_dict(), "signature":certificate.sign_transaction()}

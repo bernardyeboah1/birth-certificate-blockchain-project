@@ -47,9 +47,10 @@
     </div>
 
     <div class="container">
-        <table id="unmined_transactions_table" class="table table-bordered" cellspacing="0" width="100%">
+        <div class="table-responsive">
 
-        </table>
+            <table id="unmined_transactions_table" class="table table-bordered" cellspacing="0" width="100%"></table>
+        </div>
 
         <div class="col-lg-12 text-center">
             <input type="button" id="mine_button" class="btn btn-primary btn-lg" value="Mine">
@@ -71,9 +72,9 @@
     </div>
 
     <div class="container">
-        <table id="transactions_table" class="table table-bordered" cellspacing="0" width="100%">
-
-        </table>
+        <div class="table-responsive">
+            <table id="transactions_table" class="table table-bordered" cellspacing="0" width="100%"></table>
+        </div>
     </div>
 
 
@@ -120,10 +121,13 @@ $(function() {
                         count,
                         tx['child_name'],
                         tx['date_of_birth'],
+                        tx['time_of_birth'],
+                        tx['obstetrician'],
                         tx['place_of_birth'],
                         tx['parent1_name'],
                         tx['parent2_name'],
-                        tx['birth_certificate_id'],
+                        tx['nurse_name'],
+                        tx['nurse_registraion_number'],
                         tx['hospital_public_key'],
                         formattedTimestamp,
                         block['block_number']
@@ -140,16 +144,19 @@ $(function() {
                     { title: "#" },
                     { title: "Child Name" },
                     { title: "Date of Birth" },
-                    { title: "Place of Birth" },
+                    { title: "Time of Birth" },
+                    { title: "Obstetrician" },
+                    { title: "Place of birth" },
                     { title: "Parent 1" },
                     { title: "Parent 2" },
-                    { title: "Certificate ID" },
+                    { title: "Documenting Nurse Name" },
+                    { title: "Documenting Nurse Registration Number" },
                     { title: "Hospital Public Key" },
                     { title: "Timestamp" },
                     { title: "Block #" }
                 ],
                 columnDefs: [
-                    { targets: [1,2,3,4,5,6,7,8,9], render: $.fn.dataTable.render.ellipsis(25) }
+                    { targets: "_all", render: $.fn.dataTable.render.ellipsis(25) }
                 ]
             });
         },
@@ -171,16 +178,15 @@ $(function() {
                 let tx = response['transactions'][i];
 
                 let row = [
-                    count,
                     tx['child_name'],
                     tx['date_of_birth'],
-                    tx['place_of_birth'],
+                    tx['time_of_birth'],
                     tx['parent1_name'],
                     tx['parent2_name'],
-                    tx['birth_certificate_id'],
+                    tx['nurse_registraion_number'],
                     tx['hospital_public_key']
-                ];
 
+                ]
                 transactions.push(row);
                 count += 1;
             }
@@ -188,17 +194,16 @@ $(function() {
             $('#unmined_transactions_table').DataTable({
                 data: transactions,
                 columns: [
-                    { title: "#" },
                     { title: "Child Name" },
                     { title: "Date of Birth" },
-                    { title: "Place of Birth" },
+                    { title: "Time of Birth" },
                     { title: "Parent 1" },
                     { title: "Parent 2" },
-                    { title: "Certificate ID" },
+                    { title: "Documenting Nurse Registration Number" },
                     { title: "Hospital Public Key" }
                 ],
                 columnDefs: [
-                    { targets: [1,2,3,4,5,6,7], render: $.fn.dataTable.render.ellipsis(25) }
+                    { targets: "_all", render: $.fn.dataTable.render.ellipsis(25) }
                 ]
             });
         },
